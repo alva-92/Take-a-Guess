@@ -6,9 +6,16 @@ import random
 
 import speech_recognition as sr
 
-NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] # Number of possible numbers
+NUMBERS_1 = ["1", "2", "3"] # Number of possible numbers
+NUMBERS_2 = ["1", "2", "3", "4", "5", "6"]
+NUMBERS_3 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] 
 NUM_GUESSES = 3  # Default number of guess 
 PROMPT_LIMIT = 5 # Default number of times it will ask to repeat if it fails to understand
+
+difficulty = 0
+word = "None"
+
+print("SpeechRecognition version " + sr.__version__ + "\n" )
 
 def interrupt_signal_handler(signal, frame):
     print("Application terminated before expected by user. Exiting...")
@@ -19,7 +26,7 @@ def recognize_speech_from_mic(recognizer, microphone):
     with microphone as source:
         print("Please wait. Calibrating microphone...")  
         recognizer.adjust_for_ambient_noise(source, duration = 3) # Calibrate the MIC for 3 seconds
-        print("Calibration Complete")
+        print("Calibration Complete.\nGuess now")
         audio = recognizer.listen(source) # Record the user's input
 
     # Create and initialize dictionary with three keys for the response object
@@ -39,16 +46,51 @@ def recognize_speech_from_mic(recognizer, microphone):
         response["error"] = "Unable to recognize speech"
     return response
 
+def configure_game():
+    global difficulty
+    show_game_header()
+    print("Select game difficulty")
+    print("1. EASY")
+    print("2. MEDIUM")
+    print("3. HARD")
+    difficulty = input("Selection: ")
 
-def show_menu():
+def show_game_header():
     os.system('clear')
-    print("SpeechRecognition version " + sr.__version__ + "\n" )
     print("|------------------------------|")
     print("\tGuess that number\t")
     print("|------------------------------|")
-    print("The game is simple, I am thinking of a number in the given range:")
-    range = ("{words}").format(words=', '.join(NUMBERS))
-    print(range)
+
+def show_game_instructions():
+    print("The game is simple, you must guess the number the computer is thinking.")
+    proceed = input("\nWant to play (y/n): ")
+    if (proceed != 'y'):
+        print("Bye...")
+        exit(0)
+
+def initialize_game():
+    global word
+    show_game_header()
+    show_game_instructions()
+    configure_game()
+    show_game_header()
+
+    if (difficulty == '1'):
+        word = random.choice(NUMBERS_1) 
+        print("I am thinking of a number in the given range:")
+        range = ("\t{words}").format(words=', '.join(NUMBERS_1))
+        print(range)
+    elif (difficulty == '2'):
+        word = random.choice(NUMBERS_2)
+        print("I am thinking of a number in the given range:")
+        range = ("\t{words}").format(words=', '.join(NUMBERS_2))
+        print(range)
+    elif (difficulty == '3'):
+        word = random.choice(NUMBERS_3) 
+        print("I am thinking of a number in the given range:")
+        range = ("\t{words}").format(words=', '.join(NUMBERS_3))
+        print(range)    
+
     print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
 
 if __name__ == "__main__":
@@ -58,9 +100,8 @@ if __name__ == "__main__":
     r = sr.Recognizer()
     mic = sr.Microphone()
 
-    # get a random word from the list
-    word = random.choice(NUMBERS)
-    show_menu()
+    initialize_game()
+    print("Game is starting soon...\n")
     time.sleep(3) # Wait 3 seconds before starting the game
 
     for i in range(NUM_GUESSES):
