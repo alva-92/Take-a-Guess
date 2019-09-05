@@ -33,27 +33,27 @@ def recognize_speech_from_mic(recognizer, microphone):
         response["error"] = "Unable to recognize speech"
     return response
 
-if __name__ == "__main__":
-    os.system('clear')
-    print("SpeechRecognition version " + sr.__version__ )
 
+def show_menu():
+    os.system('clear')
+    print("SpeechRecognition version " + sr.__version__ + "\n" )
+    print("|------------------------------|")
+    print("\tGuess that number\t")
+    print("|------------------------------|")
+    print("The game is simple, I am thinking of a number in the given range:")
+    range = ("{words}").format(words=', '.join(NUMBERS))
+    print(range)
+    print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
+
+if __name__ == "__main__":
     # create recognizer and mic objects
     r = sr.Recognizer()
     mic = sr.Microphone()
 
     # get a random word from the list
     word = random.choice(NUMBERS)
-
-    # format the instructions string
-    instructions = (
-        "I'm thinking of one of these numbers:\n"
-        "{words}\n"
-        "You have {n} tries to guess which one.\n"
-    ).format(words=', '.join(NUMBERS), n=NUM_GUESSES)
-
-    # show instructions and wait 3 seconds before starting the game
-    print(instructions)
-    time.sleep(3)
+    show_menu()
+    time.sleep(3) # Wait 3 seconds before starting the game
 
     for i in range(NUM_GUESSES):
         for j in range(PROMPT_LIMIT):
