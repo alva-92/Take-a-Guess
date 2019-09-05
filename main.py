@@ -1,5 +1,7 @@
+import signal
 import os
 import time
+import sys
 import random
 
 import speech_recognition as sr
@@ -8,6 +10,10 @@ NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] # Number of possib
 NUM_GUESSES = 3  # Default number of guess 
 PROMPT_LIMIT = 5 # Default number of times it will ask to repeat if it fails to understand
 
+def interrupt_signal_handler(signal, frame):
+    print("Application terminated before expected by user. Exiting...")
+    sys.exit(0)
+    
 # Analyze speech from recorded from microphone
 def recognize_speech_from_mic(recognizer, microphone):
     with microphone as source:
@@ -46,6 +52,8 @@ def show_menu():
     print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, interrupt_signal_handler) # Register interrupt signal with handler
+
     # create recognizer and mic objects
     r = sr.Recognizer()
     mic = sr.Microphone()
