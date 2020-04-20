@@ -1,15 +1,15 @@
 <img src="https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/License-MIT-blue">
-<img src="https://img.shields.io/badge/Python-v3.6-blue">
+<img src="https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/Python-v3.6-blue">
 
 # Take-a-Guess
 
 Simple game where the user needs to guess the number that the program is "thinking" using speech recognition.
 
 ## Table of contents
-+ [Description](##Description)
-+ [Requirements](##Requirements)
-+ [Usage](##Usage)
-+ [License](##License)
++ [Description](#Description)
++ [Requirements](#Requirements)
++ [Usage](#Usage)
++ [License](#License)
 
 ## Description
 
