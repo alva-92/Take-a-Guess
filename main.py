@@ -1,3 +1,13 @@
+""""
+    This file is part of TAKE-A-GUESS which is released under an MIT License.
+    See file README or go to LICENSE for full license details.    
+  
+    @name         main.py
+    @description  This program uses speech recognition to simulate a guessing game
+    @author       Gerardo Enrique Alvarenga
+    @version      1.2
+"""
+
 import signal
 import os
 import time
@@ -6,14 +16,15 @@ import random
 
 import speech_recognition as sr
 
-NUMBERS_1 = ["1", "2", "3"] # Number of possible numbers
+# Possible numbers
+NUMBERS_1 = ["1", "2", "3"] 
 NUMBERS_2 = ["1", "2", "3", "4", "5", "6"]
 NUMBERS_3 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] 
-NUM_GUESSES = 3  # Default number of guess 
-PROMPT_LIMIT = 5 # Default number of times it will ask to repeat if it fails to understand
 
-difficulty = 0
-word = "None"
+NUM_GUESSES  = 3  # Default number of guess 
+PROMPT_LIMIT = 5  # Default number of times it will ask to repeat if it fails to understand
+difficulty   = 0
+word         = "None"
 
 print("SpeechRecognition version " + sr.__version__ + "\n" )
 
@@ -56,7 +67,11 @@ def configure_game():
     difficulty = input("Selection: ")
 
 def show_game_header():
-    os.system('clear')
+    if (sys.platform == 'win32'):
+        os.system('cls')
+    else:
+        os.system('clear')
+
     print("|------------------------------|")
     print("\tGuess that number\t")
     print("|------------------------------|")

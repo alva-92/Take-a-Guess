@@ -1,10 +1,12 @@
+<div style="text-align:center;">
+<h1>Take-a-Guess </h1>
 
-![logo]("./assets/logo-1.jpg")
-
-# Take-a-Guess
-![technology-1-badge][technology-1-image] ![license-badge][license-image]
+<img src="./assets/logo-1.jpg" width="400px" height="400px">
 
 Simple game where the user needs to guess the number that the program is "thinking" using speech recognition.
+
+![technology-1-badge][technology-1-image] ![license-badge][license-image]
+</div>
 
 ## Table of contents
 + [Description](#Description)
@@ -16,13 +18,15 @@ Simple game where the user needs to guess the number that the program is "thinki
 
 This simple guessing game starts by letting the user select the difficulty.
 
-+ Easy: The user tries to guess a number between 1 and 3
-+ Medium: The user tries to guess a number between 1 and 6
-+ Hard: The user tries to guess a number between 1 and 10
++ <strong>Easy:</strong>: The user tries to guess a number between 1 and 3.
++ <strong>Medium:</strong> The user tries to guess a number between 1 and 6.
++ <strong>Hard:</strong> The user tries to guess a number between 1 and 10.
 
 The user then gets 3 chances to guess the number the computer is "Thinking of".
 
 ## Requirements
+
+### Linux
 In order for this project to operate it needs the following lib to be installed
 
 + SpeechRecognition
@@ -32,7 +36,12 @@ SpeechRecognition is a library that helps in performing speech  recognition in p
 sudo apt-get install libasound-dev
 sudo apt-get install portaudio19-dev
 pip install SpeechRecognition
+pip install PyAudio
 ```
+
+### Windows
+pip install SpeechRecognition
+pip install PyAudio
 
 # Usage
 
@@ -42,6 +51,12 @@ Once donwloaded, open the terminal on the directory where the game is and run th
 ```bash
 chmod +x ./main.py
 python ./main.py
+```
+
+Note if running on Windows using Git Bash run using the following command:
+
+```bash
+winpty ptyhon ./main.py
 ```
 
 ## License
