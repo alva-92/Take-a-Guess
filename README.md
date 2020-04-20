@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/badge/License-MIT-blue">
+<img src="https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/License-MIT-blue">
 <img src="https://img.shields.io/badge/Python-v3.6-blue">
 
 # Take-a-Guess
