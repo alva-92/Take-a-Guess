@@ -1,7 +1,8 @@
-<img src="https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/License-MIT-blue">
-<img src="https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/Python-v3.6-blue">
+
+![logo][logo-image]
 
 # Take-a-Guess
+![technology-1-badge][technology-1-image] ![license-badge][license-image]
 
 Simple game where the user needs to guess the number that the program is "thinking" using speech recognition.
 
@@ -45,3 +46,6 @@ python ./main.py
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+[logo-image]: ./assets/logo-1.jpg
+[technology-1-image]: https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/Python-v3.6-blue
+[license-image]: https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&url=https://img.shields.io/badge/License-MIT-blue
