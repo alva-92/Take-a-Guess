@@ -14,7 +14,25 @@ import time
 import sys
 import random
 
+import logging, traceback
+
 import speech_recognition as sr
+
+
+# If you need to access files/modules in a different directory
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+#gBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+###
+### Logger
+###
+
+log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logFile = 'ea-take-a-guess.log'
+
+#logging.basicConfig(filename='realtime.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 # Possible numbers
 NUMBERS_1 = ["1", "2", "3"] 
@@ -116,7 +134,8 @@ if __name__ == "__main__":
     mic = sr.Microphone()
 
     initialize_game()
-    print("Game is starting soon...\n")
+    logger.info("Take a guess - 2020")
+    logger.info("Game is starting soon...")
     time.sleep(3) # Wait 3 seconds before starting the game
 
     for i in range(NUM_GUESSES):
