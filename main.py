@@ -5,7 +5,7 @@
     @name         main.py
     @description  This program uses speech recognition to simulate a guessing game
     @author       Gerardo Enrique Alvarenga
-    @version      1.2
+    @version      1.3.0
 """
 
 import signal
@@ -13,26 +13,35 @@ import os
 import time
 import sys
 import random
-
 import logging, traceback
+from logging.handlers import RotatingFileHandler
 
 import speech_recognition as sr
+
+from GuessGame import GuessGame as guessGame
 
 
 # If you need to access files/modules in a different directory
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #gBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-###
-### Logger
-###
 
-log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logFile = 'ea-take-a-guess.log'
+"""
+Configure Application logger
+Logs both to console and debug log file.
+Application logs set DEBUG.
+"""
+file_handler   = logging.FileHandler(filename='ea-take-a-guess.log')
+stdout_handler = logging.StreamHandler(sys.stdout)
+handlers       = [file_handler, stdout_handler]
 
-#logging.basicConfig(filename='realtime.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(
+    level = logging.DEBUG, 
+    format='[%(asctime)s] - {%(filename)s:%(lineno)d} - %(levelname)s -- %(message)s',
+    handlers=handlers
+)
+
+logger = logging.getLogger('ea-gGame')
 
 # Possible numbers
 NUMBERS_1 = ["1", "2", "3"] 
@@ -41,7 +50,6 @@ NUMBERS_3 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 NUM_GUESSES  = 3  # Default number of guess 
 PROMPT_LIMIT = 5  # Default number of times it will ask to repeat if it fails to understand
-difficulty   = 0
 word         = "None"
 
 print("SpeechRecognition version " + sr.__version__ + "\n" )
@@ -61,7 +69,9 @@ def recognize_speech_from_mic(recognizer, microphone):
     # Create and initialize dictionary with three keys for the response object
     response = {
         "success": True,      # API call was successful
-        "error": None,        # API is unreacheable or speech was not recognized
+        "error": 
+        
+        None,        # API is unreacheable or speech was not recognized
         "transcription": None # Speech input already transcribed to text.
     }
 
@@ -74,15 +84,6 @@ def recognize_speech_from_mic(recognizer, microphone):
     except sr.UnknownValueError: # speech was unintelligible
         response["error"] = "Unable to recognize speech"
     return response
-
-def configure_game():
-    global difficulty
-    show_game_header()
-    print("Select game difficulty")
-    print("1. EASY")
-    print("2. MEDIUM")
-    print("3. HARD")
-    difficulty = input("Selection: ")
 
 def show_game_header():
     if (sys.platform == 'win32'):
@@ -105,20 +106,21 @@ def initialize_game():
     global word
     show_game_header()
     show_game_instructions()
-    configure_game()
+    game = guessGame()
+    difficulty = game.configure_game()
     show_game_header()
 
-    if (difficulty == '1'):
+    if (difficulty == 1):
         word = random.choice(NUMBERS_1) 
         print("I am thinking of a number in the given range:")
         range = ("\t{words}").format(words=', '.join(NUMBERS_1))
         print(range)
-    elif (difficulty == '2'):
+    elif (difficulty == 2):
         word = random.choice(NUMBERS_2)
         print("I am thinking of a number in the given range:")
         range = ("\t{words}").format(words=', '.join(NUMBERS_2))
         print(range)
-    elif (difficulty == '3'):
+    elif (difficulty == 3):
         word = random.choice(NUMBERS_3) 
         print("I am thinking of a number in the given range:")
         range = ("\t{words}").format(words=', '.join(NUMBERS_3))
