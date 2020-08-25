@@ -24,3 +24,4 @@ def test_config_game_f(monkeypatch, test_input):
     test_inst = GuessGame()
     result = test_inst.configure_game()
     assert result == gameSettings.INVALID_DIFFICULTY
+
