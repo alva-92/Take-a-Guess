@@ -20,11 +20,9 @@ import speech_recognition as sr
 
 from GuessGame import GuessGame as guessGame
 
-
 # If you need to access files/modules in a different directory
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #gBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 """
 Configure Application logger
@@ -43,10 +41,7 @@ logging.basicConfig(
 
 logger = logging.getLogger('ea-gGame')
 
-# Possible numbers
-NUMBERS_1 = ["1", "2", "3"] 
-NUMBERS_2 = ["1", "2", "3", "4", "5", "6"]
-NUMBERS_3 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] 
+gGame = guessGame()
 
 NUM_GUESSES  = 3  # Default number of guess 
 PROMPT_LIMIT = 5  # Default number of times it will ask to repeat if it fails to understand
@@ -85,47 +80,21 @@ def recognize_speech_from_mic(recognizer, microphone):
         response["error"] = "Unable to recognize speech"
     return response
 
-def show_game_header():
-    if (sys.platform == 'win32'):
-        os.system('cls')
-    else:
-        os.system('clear')
-
-    print("|------------------------------|")
-    print("\tGuess that number\t")
-    print("|------------------------------|")
-
-def show_game_instructions():
-    print("The game is simple, you must guess the number the computer is thinking.")
-    proceed = input("\nWant to play (y/n): ")
-    if (proceed != 'y'):
-        print("Bye...")
-        exit(0)
-
 def initialize_game():
     global word
-    show_game_header()
-    show_game_instructions()
-    game = guessGame()
-    difficulty = game.configure_game()
-    show_game_header()
+    
+    gGame.show_game_header()
+    
+    gGame.show_game_instructions()
+    
+    difficulty = gGame.configure_game()
+    
+    gGame.set_game_difficulty(difficulty)
+    
+    gGame.show_game_header()
 
-    if (difficulty == 1):
-        word = random.choice(NUMBERS_1) 
-        print("I am thinking of a number in the given range:")
-        range = ("\t{words}").format(words=', '.join(NUMBERS_1))
-        print(range)
-    elif (difficulty == 2):
-        word = random.choice(NUMBERS_2)
-        print("I am thinking of a number in the given range:")
-        range = ("\t{words}").format(words=', '.join(NUMBERS_2))
-        print(range)
-    elif (difficulty == 3):
-        word = random.choice(NUMBERS_3) 
-        print("I am thinking of a number in the given range:")
-        range = ("\t{words}").format(words=', '.join(NUMBERS_3))
-        print(range)    
-
+    word = gGame.get_winning_num()
+    
     print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
 
 if __name__ == "__main__":
