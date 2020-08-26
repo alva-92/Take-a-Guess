@@ -5,7 +5,7 @@
     @name         main.py
     @description  This program uses speech recognition to simulate a guessing game
     @author       Gerardo Enrique Alvarenga
-    @version      1.3.0
+    @version      1.4.0
 """
 
 import signal
@@ -26,18 +26,29 @@ from GuessGame import GuessGame as guessGame
 #gBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 """
-Configure Application logger
-Logs both to console and debug log file.
-Application logs set DEBUG.
+    Configure Application logger
+    Logs both to console and debug log file.
+    Application logs set DEBUG.
 """
-file_handler   = logging.FileHandler(filename='ea-take-a-guess.log')
+
+### Format string for more detailed debugging
+db_a_fmtstr = '[%(asctime)s] - {%(filename)s:%(lineno)d} - %(levelname)s -- %(message)s'
+
+### Format string for basic debugging
+db_b_fmtstr = '[%(asctime)s] - {%(lineno)d} - %(levelname)s -- %(message)s'
+
+### Date format
+dt_fmtstr = "%d/%m/%Y %I:%M:%S %p"
+
+file_handler   = logging.FileHandler(filename='ea-take-a-guess.log',mode="a")
 stdout_handler = logging.StreamHandler(sys.stdout)
 handlers       = [file_handler, stdout_handler]
 
 logging.basicConfig(
-    level = logging.DEBUG, 
-    format='[%(asctime)s] - {%(filename)s:%(lineno)d} - %(levelname)s -- %(message)s',
-    handlers=handlers
+    level    = logging.DEBUG, 
+    format   = db_a_fmtstr,
+    handlers = handlers,
+    datefmt  = dt_fmtstr
 )
 
 logger = logging.getLogger('ea-gGame')
@@ -48,65 +59,30 @@ NUM_GUESSES  = 3  # Default number of guess
 PROMPT_LIMIT = 5  # Default number of times it will ask to repeat if it fails to understand
 word         = "None"
 
-print("SpeechRecognition version " + sr.__version__ + "\n" )
-
 def interrupt_signal_handler(signal, frame):
     print("Application terminated before expected by user. Exiting...")
     sys.exit(0)
-    
-# Analyze speech from recorded from microphone
-def recognize_speech_from_mic(recognizer, microphone):
-    with microphone as source:
-        print("Please wait. Calibrating microphone...")  
-        recognizer.adjust_for_ambient_noise(source, duration = 3) # Calibrate the MIC for 3 seconds
-        print("Calibration Complete.\nGuess now")
-        audio = recognizer.listen(source) # Record the user's input
-
-    # Create and initialize dictionary with three keys for the response object
-    response = {
-        "success": True,      # API call was successful
-        "error": 
-        
-        None,        # API is unreacheable or speech was not recognized
-        "transcription": None # Speech input already transcribed to text.
-    }
-
-    # Attempt to recognize the recorded input
-    try:
-        response["transcription"] = recognizer.recognize_google(audio, language='en-CA', show_all = False)
-    except sr.RequestError: # API was unreachable or unresponsive
-        response["success"] = False
-        response["error"] = "API unavailable"
-    except sr.UnknownValueError: # speech was unintelligible
-        response["error"] = "Unable to recognize speech"
-    return response
 
 def initialize_game():
     global word
     
     gGame.show_game_header()
-    
     gGame.show_game_instructions()
-    
+
     while True:
         result = gGame.configure_game()
         if result == gameSettings.SUCCESS:
             break
         else:
             continue
-        
+    
     gGame.show_game_header()
-
     word = gGame.get_winning_num()
     
     print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, interrupt_signal_handler) # Register interrupt signal with handler
-
-    # create recognizer and mic objects
-    r = sr.Recognizer()
-    mic = sr.Microphone()
 
     initialize_game()
     logger.info("Take a guess - 2020")
@@ -116,7 +92,9 @@ if __name__ == "__main__":
     for i in range(NUM_GUESSES):
         for j in range(PROMPT_LIMIT):
             print('Guess {}.'.format(i+1))
-            guess = recognize_speech_from_mic(r, mic)
+            
+            guess = gGame.recognize_speech_from_mic(gGame.get_recognizer(), gGame.get_mic()) # TODO: Refactor to not take parameters
+
             if guess["transcription"]: # Retrieved transcription successfully exit the loop
                 break
             if not guess["success"]: # API call succeeded but no transcription was received
