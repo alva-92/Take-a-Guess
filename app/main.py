@@ -30,7 +30,7 @@ from GuessGame import GuessGame as guessGame
     Logs both to console and debug log file.
     Application logs set DEBUG.
 """
-
+ 
 ### Format string for more detailed debugging
 db_a_fmtstr = '[%(asctime)s] - {%(filename)s:%(lineno)d} - %(levelname)s -- %(message)s'
 
