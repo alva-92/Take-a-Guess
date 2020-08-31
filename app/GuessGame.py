@@ -1,9 +1,10 @@
+import time
 import logging
 import sys
 import os
 import random
 import speech_recognition as sr
-import GameSettings as gameSettings
+import GameSettings as game
 
 class GuessGame:
 
@@ -12,6 +13,7 @@ class GuessGame:
         self.__winningNum = "Not Set"
         self.__guessedNum = "Not Set"
         self.__dificulty  = 0
+        self.__num_range  = "Not Set"
         self.__recognizer = sr.Recognizer()
         self.__microphone = sr.Microphone()
         pass
@@ -29,7 +31,7 @@ class GuessGame:
     def show_game_instructions(self):
         print("The game is simple, you must guess the number the computer is thinking.")
         proceed = input("\nWant to play (y/n): ")
-        if (proceed != 'y' or proceed != 'Y'):
+        if (proceed != 'y'):
             print("Bye...")
             exit(0)
 
@@ -37,52 +39,63 @@ class GuessGame:
         try:
             print("Select game difficulty \n 1 - {0}\n 2 - {1}\n 3 - {2}"
             .format(
-                gameSettings.Lvl.EASY.name,
-                gameSettings.Lvl.MEDIUM.name,
-                gameSettings.Lvl.HARD.name))
+                game.Lvl.EASY.name,
+                game.Lvl.MEDIUM.name,
+                game.Lvl.HARD.name))
             
             difficulty = int(input("Selection: "))
             
             if difficulty < 1 or difficulty > 3:
+                self.__logger.warning("Not a valid difficulty selection")
                 raise ValueError
-        
+            else:
+                self.__logger.info("Valid difficulty selection, saving selection")
+                self.set_game_difficulty(difficulty)
+                return game.SUCCESS
+
         except ValueError:
             print("Must be an integer with a value of 1 to 3. Try again")
-            return gameSettings.INVALID_DIFFICULTY
-        else:
-            self.set_game_difficulty(difficulty)
-            return gameSettings.SUCCESS
+            return game.INVALID_DIFFICULTY
+
 
     def set_game_difficulty(self, difficulty):
+        self.__logger.debug("Saving difficulty as: " + str(difficulty))
         self.__dificulty = difficulty
-        num_range = None
-        if (difficulty == gameSettings.Lvl.EASY):
-            self.set_winning_num(random.choice(gameSettings.NUMBERS_1))
-            num_range = ("\t{words}").format(words=', '.join(gameSettings.NUMBERS_1))
-        elif (difficulty == gameSettings.Lvl.MEDIUM):
-            self.set_winning_num(random.choice(gameSettings.NUMBERS_2))
-            num_range = ("\t{words}").format(words=', '.join(gameSettings.NUMBERS_2))
-        elif (difficulty == gameSettings.Lvl.HARD):
-            self.set_winning_num(random.choice(gameSettings.NUMBERS_3))
-            num_range = ("\t{words}").format(words=', '.join(gameSettings.NUMBERS_3))
+        
+        if (difficulty == game.Lvl.EASY.value):
+            self.set_winning_num(random.choice(game.GameSettings.NUMBERS_1))
+            self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_1))
+        elif (difficulty == game.Lvl.MEDIUM):
+            self.set_winning_num(random.choice(game.GameSettings.NUMBERS_2))
+            self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_2))
+        elif (difficulty == game.Lvl.HARD):
+            self.set_winning_num(random.choice(game.GameSettings.NUMBERS_3))
+            self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_3))
+        else:
+            self.__logger.error("Winning number not set")
 
-        print("I am thinking of a number in the given range:")
-        print(num_range)
+        
+        print(self.__num_range)
+        time.sleep(2)
 
     def get_game_difficulty(self):
         return self.__dificulty
 
     def set_winning_num(self, num):
         self.__winningNum = num
+        self.__logger.info("Winning number set to " + str(self.__winningNum))
 
     def get_winning_num(self):
         return self.__winningNum
     
     def check_usr_guess(self, usr_guess):
-        if self.__winningNum == usr_guess:
+        
+        if self.__winningNum == usr_guess["transcription"]:
             return True
         return False
 
+    def get_num_range(self):
+        return self.__num_range
     def get_mic(self):
         return self.__microphone
 
@@ -93,7 +106,10 @@ class GuessGame:
         Analyze speech from recorded from microphone
         TODO: Should be in a thread - Its blocking in slow networks
     """
-    def recognize_speech_from_mic(self, recognizer, microphone):
+    def recognize_speech_from_mic(self):
+
+        microphone = self.get_mic()
+        recognizer = self.get_recognizer()
 
         with microphone as source:
             print("Please wait. Calibrating microphone...")  
@@ -118,4 +134,19 @@ class GuessGame:
             response["error"] = "API unavailable"
         except sr.UnknownValueError: # speech was unintelligible
             response["error"] = "Unable to recognize speech"
+
         return response
+
+    def validate_speech(self, speech):
+        if speech["transcription"]: # Retrieved transcription successfully exit the loop
+            print("You said: {}".format(speech["transcription"]))              # Show the trascription to the user
+            return True
+        if not speech["success"]: # API call succeeded but no transcription was received
+            return False
+        if speech["error"]: # If there was an error, stop the game
+            print("ERROR: {}".format(speech["error"]))
+            self.__logger.error("Program failure recognizing speech")
+            return False
+        else:
+            print("I didn't catch that. What did you say?\n")
+            return False
