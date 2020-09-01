@@ -1,19 +1,15 @@
 from enum import Enum, unique
 
 
-
-
-SUCCESS            = 1001
-INVALID_DIFFICULTY = 1800
-
 @unique
 class Lvl(Enum):
     EASY   = 1
     MEDIUM = 2
     HARD   = 3
 
-class GameCodes:
-    pass
+class Status:
+    SUCCESS            = 1001
+    INVALID_DIFFICULTY = 1800
 
 class GameSettings:
 

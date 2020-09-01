@@ -51,11 +51,11 @@ class GuessGame:
             else:
                 self.__logger.info("Valid difficulty selection, saving selection")
                 self.set_game_difficulty(difficulty)
-                return game.SUCCESS
+                return game.Status.SUCCESS
 
         except ValueError:
             print("Must be an integer with a value of 1 to 3. Try again")
-            return game.INVALID_DIFFICULTY
+            return game.Status.INVALID_DIFFICULTY
 
 
     def set_game_difficulty(self, difficulty):
@@ -65,10 +65,10 @@ class GuessGame:
         if (difficulty == game.Lvl.EASY.value):
             self.set_winning_num(random.choice(game.GameSettings.NUMBERS_1))
             self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_1))
-        elif (difficulty == game.Lvl.MEDIUM):
+        elif (difficulty == game.Lvl.MEDIUM.value):
             self.set_winning_num(random.choice(game.GameSettings.NUMBERS_2))
             self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_2))
-        elif (difficulty == game.Lvl.HARD):
+        elif (difficulty == game.Lvl.HARD.value):
             self.set_winning_num(random.choice(game.GameSettings.NUMBERS_3))
             self.__num_range = ("\t{words}").format(words=', '.join(game.GameSettings.NUMBERS_3))
         else:

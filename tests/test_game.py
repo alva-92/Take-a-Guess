@@ -3,8 +3,6 @@
 """
 
 import pytest
-from mock import patch
-import module
 from .context import GuessGame
 from .context import gameSettings
 

@@ -15,7 +15,7 @@ import sys
 import random
 import logging, traceback
 from logging.handlers import RotatingFileHandler
-import GameSettings as gameSettings
+import GameSettings as game
 
 from GuessGame import GuessGame as guessGame
 
@@ -67,7 +67,7 @@ def initialize_game():
 
     while True:
         result = gGame.configure_game()
-        if result == gameSettings.SUCCESS:
+        if result == game.Status.SUCCESS:
             break
         else:
             continue
@@ -76,7 +76,7 @@ def initialize_game():
 
     print("I am thinking of a number in the given range:")
     print(gGame.get_num_range()) 
-    print("\nYou have " + str(NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
+    print("\nYou have " + str(game.GameSettings.NUM_GUESSES) + " chances to guess...Let's see what you got. Ready?\n")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, interrupt_signal_handler) # Register interrupt signal with handler
@@ -86,8 +86,8 @@ if __name__ == "__main__":
     logger.info("Game is starting soon...")
     time.sleep(3) # Wait 3 seconds before starting the game
 
-    for i in range(NUM_GUESSES):
-        for j in range(PROMPT_LIMIT):
+    for i in range(game.GameSettings.NUM_GUESSES):
+        for j in range(game.GameSettings.PROMPT_LIMIT):
             print('Guess {}.'.format(i+1))
             
             guess = gGame.recognize_speech_from_mic()
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             if gGame.validate_speech(guess):
                 break
 
-        user_has_more_attempts = i < NUM_GUESSES - 1                      # Check if there are any attempts left and reduce the count
+        user_has_more_attempts = i < game.GameSettings.NUM_GUESSES - 1                      # Check if there are any attempts left and reduce the count
 
         if gGame.check_usr_guess(guess):                                  # determine if the user has won the game
             print("Oh snap! You actually guessed it! You win!")
