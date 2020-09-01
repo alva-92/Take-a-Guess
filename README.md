@@ -1,12 +1,17 @@
-<div style="text-align:center;">
-<h1>Take-a-Guess </h1>
+<div align="center">
+<h1 align="center">Take-a-Guess </h1>
 
+<p align="center">
 <img src="./assets/logo-1.jpg" width="400px" height="400px">
+</p>
 
+<p align="center">
 Simple game where the user needs to guess the number that the program is "thinking" using speech recognition.
+</p>
 
 ![technology-1-badge][technology-1-image] ![license-badge][license-image]
 </div>
+
 
 ## Table of contents
 + [Description](#Description)
